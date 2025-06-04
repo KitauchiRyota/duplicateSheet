@@ -1,20 +1,14 @@
 function duplicateSheetAndRename() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
 
-  // 1. コピー元のシート名をユーザーに尋ねる
-  const sourceSheetName = Browser.inputBox('シート複製', 'コピー元のシート名を入力してください:', Browser.Buttons.OK_CANCEL);
-  if (sourceSheetName === 'cancel' || sourceSheetName === '') {
-    Logger.log('ユーザーによりキャンセルされました、またはシート名が入力されませんでした。');
-    return;
-  }
-
+  const sourceSheetName = "template"; // 初期値は空文字列
   const sourceSheet = ss.getSheetByName(sourceSheetName);
   if (!sourceSheet) {
     Browser.msgBox('エラー', `指定されたシート「${sourceSheetName}」は見つかりませんでした。`, Browser.Buttons.OK);
     return;
   }
 
-  // 2. コピー先のシート名が格納されているセル範囲をユーザーに尋ねる
+  // コピー先のシート名が格納されているセル範囲をユーザーに尋ねる
   const sheetNamesRangeAddress = Browser.inputBox('シート複製', 'コピー先のシート名が格納されているセル範囲を「SheetName!A1:A5」のように入力してください:', Browser.Buttons.OK_CANCEL);
   if (sheetNamesRangeAddress === 'cancel' || sheetNamesRangeAddress === '') {
     Logger.log('ユーザーによりキャンセルされました、またはセル範囲が入力されませんでした。');
