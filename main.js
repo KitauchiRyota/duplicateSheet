@@ -1,12 +1,12 @@
 function duplicateSheetAndRename() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
 
-//   ☆☆☆ここを編集
-    //   コピー元のシート
-    const sourceSheetName = "template";
-    // コピー後のシート名が格納されているシート名とセル範囲
-    const sheetNamesRangeAddress = "ポータル!B2:B5";
-//   ここまで☆☆☆
+  //   ☆ここを編集
+  //   コピーする元となるのシート
+  const sourceSheetName = "template"; // 初期値は空文字列
+  // コピー後のシート名が格納されているセル範囲
+  const sheetNamesRangeAddress = "ポータル!B2:B68";
+  //   ここまで☆
 
   const sourceSheet = ss.getSheetByName(sourceSheetName);
   if (!sourceSheet) {
@@ -48,7 +48,7 @@ function duplicateSheetAndRename() {
       newSheet.setName(newSheetName);
 
       // C1セルに新しいシート名を上書き
-      newSheet.getRange('C1').setValue(newSheetName);
+      newSheet.getRange('D1').setValue(newSheetName);
 
       // 新しいシートへのリンクを作成し、ポータルシートの隣のセルに書き込む
       const sheetUrl = ss.getUrl() + `#gid=${newSheet.getSheetId()}`;
