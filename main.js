@@ -1,17 +1,16 @@
 function duplicateSheetAndRename() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
 
+  //   ☆ここを編集
+  //   コピーする元となるのシート
   const sourceSheetName = "template"; // 初期値は空文字列
+  // コピー後のシート名が格納されているセル範囲
+  const sheetNamesRangeAddress = "ポータル!B2:B5";
+  //   ここまで☆
+
   const sourceSheet = ss.getSheetByName(sourceSheetName);
   if (!sourceSheet) {
     Browser.msgBox('エラー', `指定されたシート「${sourceSheetName}」は見つかりませんでした。`, Browser.Buttons.OK);
-    return;
-  }
-
-  // コピー先のシート名が格納されているセル範囲をユーザーに尋ねる
-  const sheetNamesRangeAddress = Browser.inputBox('シート複製', 'コピー先のシート名が格納されているセル範囲を「SheetName!A1:A5」のように入力してください:', Browser.Buttons.OK_CANCEL);
-  if (sheetNamesRangeAddress === 'cancel' || sheetNamesRangeAddress === '') {
-    Logger.log('ユーザーによりキャンセルされました、またはセル範囲が入力されませんでした。');
     return;
   }
 
@@ -24,9 +23,12 @@ function duplicateSheetAndRename() {
   }
 
   const sheetNames = sheetNamesRange.getValues();
+  const portalSheet = ss.getSheetByName('ポータル');
+  const startRow = sheetNamesRange.getRow();
+  const nameCol = sheetNamesRange.getColumn();
 
   // 複製処理
-  sheetNames.forEach(row => {
+  sheetNames.forEach((row, i) => {
     const newSheetName = String(row[0]).trim(); // セル値は配列で返されるため、row[0]で値を取得し、Stringに変換してtrim()で空白を除去
 
     if (newSheetName === '') {
@@ -45,10 +47,14 @@ function duplicateSheetAndRename() {
       const newSheet = sourceSheet.copyTo(ss);
       newSheet.setName(newSheetName);
 
-      // A3セルに新しいシート名を上書き
-      newSheet.getRange('A3').setValue(newSheetName);
+      // C1セルに新しいシート名を上書き
+      newSheet.getRange('C1').setValue(newSheetName);
 
-      Logger.log(`シート「${sourceSheetName}」を「${newSheetName}」として複製し、A3セルに「${newSheetName}」を書き込みました。`);
+      // 新しいシートへのリンクを作成し、ポータルシートの隣のセルに書き込む
+      const sheetUrl = ss.getUrl() + `#gid=${newSheet.getSheetId()}`;
+      portalSheet.getRange(startRow + i, nameCol + 1).setFormula(`=HYPERLINK("${sheetUrl}","${newSheetName}")`);
+
+      Logger.log(`シート「${sourceSheetName}」を「${newSheetName}」として複製し、C1セルに「${newSheetName}」を書き込み、リンクを追加しました。`);
     } catch (e) {
       Browser.msgBox('エラー', `シート「${newSheetName}」の複製中にエラーが発生しました: ${e.message}`, Browser.Buttons.OK);
     }
