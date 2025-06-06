@@ -3,10 +3,11 @@ function duplicateSheetAndRename() {
 
   //   ☆ここを編集
   //   コピーする元となるのシート
-  const sourceSheetName = "template"; // 初期値は空文字列
+  const sourceSheetName = "template";
   // コピー後のシート名が格納されているセル範囲
   const sheetNamesRangeAddress = "ポータル!B2:B68";
   //   ここまで☆
+  // コピー後のシートのGA名は，D1のセルを更新するようにハードコーディングしてしまっています．変更したい場合は，このコードの50行目あたりを変更してください．
 
   const sourceSheet = ss.getSheetByName(sourceSheetName);
   if (!sourceSheet) {
